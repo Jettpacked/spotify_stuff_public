@@ -37,11 +37,15 @@ jobs:
     - name: Run update_top_countries.py
       env:
         POST_REQUEST_AUTH_KEY_FILE_UPDATES: ${{ secrets.POST_REQUEST_AUTH_KEY_FILE_UPDATES }}
+        PRAGMA_KEY_USER_LOGIN_INFO: ${{ secrets.PRAGMA_KEY_USER_LOGIN_INFO }}
+        PRAGMA_KEY_USER_SEC_INFO: ${{ secrets.PRAGMA_KEY_USER_SEC_INFO }}
+        PYTHONANYWHERE_API_KEY: ${{ secrets.PYTHONANYWHERE_API_KEY }}
+        PYTHONANYWHERE_USERNAME: ${{ secrets.PYTHONANYWHERE_USERNAME }}
         REDIRECT_URI_SPOTIFY_AUTHENTICATION: ${{ secrets.REDIRECT_URI_SPOTIFY_AUTHENTICATION }}
         SPOTIFYAPI_CLIENT_ID: ${{ secrets.SPOTIFYAPI_CLIENT_ID }}
         SPOTIFYAPI_CLIENT_SECRET: ${{ secrets.SPOTIFYAPI_CLIENT_SECRET }}
-        PYTHONANYWHERE_USERNAME: ${{ secrets.PYTHONANYWHERE_USERNAME }}
-        PYTHONANYWHERE_API_KEY: ${{ secrets.PYTHONANYWHERE_API_KEY }}
+        SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
+        SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
       run: 
         cd spotify_private_repo
         python update_top_countries.py

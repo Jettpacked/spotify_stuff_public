@@ -51,6 +51,7 @@ jobs:
         SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
       run: 
         python update_top_countries.py
+      working-directory: spotify_private_repo
 
       # Step 5: Git Config
     - name: Git Config

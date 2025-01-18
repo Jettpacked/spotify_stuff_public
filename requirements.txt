@@ -2,5 +2,5 @@ spotipy==2.24.0
 requests==2.32.3
 selenium==4.27.1
 pandas==2.2.3
-sqlcipher2-wheel==0.5.2.post1
+sqlcipher3-wheels==0.5.2.post1
 flask==3.1.0

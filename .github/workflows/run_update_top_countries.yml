@@ -5,7 +5,7 @@ name: update_top_countries
 # Controls when the workflow will run
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 17 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

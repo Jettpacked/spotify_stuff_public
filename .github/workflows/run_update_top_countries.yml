@@ -53,14 +53,20 @@ jobs:
         python update_top_countries.py
       working-directory: spotify_private_repo
 
-      # Step 5: Git Config
+      # Step 5: Run upload_files_to_python_anywhere.py
+    - name: Run upload_files_to_python_anywhere.py
+      run: |
+        python upload_files_to_python_anywhere.py "static/files/json/top_songs_by_country.json"
+      working-directory: spotify_private_repo
+      
+      # Step 6: Git Config
     - name: Git Config
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
       working-directory: spotify_private_repo
 
-      # Step 6: Commit and Push Changes
+      # Step 7: Commit and Push Changes
     - name: Commit changes
       run: |
        if git diff --quiet HEAD -- ./static/files/text/top_songs_by_country.json; then

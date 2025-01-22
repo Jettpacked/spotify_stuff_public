@@ -32,26 +32,30 @@ jobs:
         lfs: true
     
     - name: Checkout LFS objects
+      working-directory: spotify_private_repo
       run: |
-        defaults:
-        run:
-          working-directory: spotify_private_repo
         git lfs checkout
+        
     - name: Install Git LFS
+      working-directory: spotify_private_repo
       run: |
         curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
         sudo apt-get install git-lfs
+        
     - name: Track large files
+      working-directory: spotify_private_repo
       run: git lfs track "*.db"
         
     # Step 3: Install Dependencies
     - name: Install Dependencies
+      working-directory: spotify_private_repo
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
      # Step 4: Run Script
     - name: Run update_top_countries.py
+      working-directory: spotify_private_repo
       env:
         POST_REQUEST_AUTH_KEY_FILE_UPDATES: ${{ secrets.POST_REQUEST_AUTH_KEY_FILE_UPDATES }}
         PRAGMA_KEY_USER_LOGIN_INFO: ${{ secrets.PRAGMA_KEY_USER_LOGIN_INFO }}
@@ -68,12 +72,14 @@ jobs:
 
       # Step 5: Run upload_files_to_python_anywhere.py
     - name: Run upload_files_to_python_anywhere.py
+      working-directory: spotify_private_repo
       run: |
         python pythonanywhere/upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
       
       
       # Step 6: Git Config
     - name: Git Config
+      working-directory: spotify_private_repo
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -81,18 +87,22 @@ jobs:
 
       # Step 7: Stash all changes
     - name: Stash all changes
+      working-directory: spotify_private_repo
       run: git stash
 
       # Step 8: Pull latest changes from remote
     - name: Pull latest changes from remote
+      working-directory: spotify_private_repo
       run: git pull origin main
       
       # Step 9: Unstash all changes
     - name: Unstash all changes
+      working-directory: spotify_private_repo
       run: git stash pop
     
       # Step 10: Commit
     - name: git add changes to specific files
+      working-directory: spotify_private_repo
       run: |
         if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
@@ -103,8 +113,10 @@ jobs:
         else
           git add pythonanywhere/databases/db/spotify_info_db
         fi
+        
         # Step 11: check for adds and push if commit exists
     - name: Check for git adds
+      working-directory: spotify_private_repo
       run: |
         staged_files=$(git diff --cached --name-only)
         if [ -z "$staged_files" ]; then

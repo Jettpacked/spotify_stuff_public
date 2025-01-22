@@ -24,7 +24,9 @@ jobs:
         path: spotify_private_repo
         lfs: true
     - name: Checkout LFS objects
-      run: git lfs checkout
+      run: |
+        cd spotify_private_repo
+        git lfs checkout
 
     # Step 2: Set up Python
     - name: Set up Python

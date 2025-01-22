@@ -49,7 +49,7 @@ jobs:
         SPOTIFYAPI_CLIENT_SECRET: ${{ secrets.SPOTIFYAPI_CLIENT_SECRET }}
         SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
         SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
-      working-directory: ./spotify_private_repo
+      working-directory: spotify_private_repo
       run: 
         python Github/update_top_countries.py
 

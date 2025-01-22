@@ -49,25 +49,28 @@ jobs:
         SPOTIFYAPI_CLIENT_SECRET: ${{ secrets.SPOTIFYAPI_CLIENT_SECRET }}
         SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
         SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
+      working-directory: ./spotify_private_repo
       run: 
         python Github/update_top_countries.py
-      working-directory: spotify_private_repo
 
       # Step 5: Run upload_files_to_python_anywhere.py
     - name: Run upload_files_to_python_anywhere.py
+      working-directory: spotify_private_repo
       run: |
         python Github/upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
-      working-directory: spotify_private_repo
+      
       
       # Step 6: Git Config
     - name: Git Config
+      working-directory: spotify_private_repo
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      working-directory: spotify_private_repo
+      
 
       # Step 7: Commit and Push Changes
     - name: Commit changes
+      working-directory: spotify_private_repo
       run: |
        if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
@@ -76,6 +79,5 @@ jobs:
           git commit -m "Update top_songs_by_country.json from Python script"
           git push
         fi
-      working-directory: spotify_private_repo
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -24,10 +24,17 @@ jobs:
         path: spotify_private_repo
         lfs: true
     - name: Checkout LFS objects
+      working-directory: spotify_private_repo
       run: |
-        cd spotify_private_repo
         git lfs checkout
-
+    - name: Install Git LFS
+      working-directory: spotify_private_repo
+      run: |
+        curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+        sudo apt-get install git-lfs
+    - name: Track large files
+      working-directory: spotify_private_repo
+      run: git lfs track "*.db"
 
     # Step 2: Set up Python
     - name: Set up Python
@@ -37,8 +44,8 @@ jobs:
         
     # Step 3: Install Dependencies
     - name: Install Dependencies
+      working-directory: spotify_private_repo
       run: |
-        cd spotify_private_repo
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
@@ -77,7 +84,7 @@ jobs:
       # Step 7: Stash Specific File
     - name: Stash specific file
       working-directory: spotify_private_repo
-      run: git stash push pythonanywhere/databases/json/top_songs_by_country.json
+      run: git stash
 
       # Step 8: Pull latest changes from remote
     - name: Pull latest changes from remote
@@ -96,7 +103,7 @@ jobs:
         if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
         else
-          git add pythonanywhere/databases/json/top_songs_by_country.json
+          git add pythonanywhere/databases/json/top_songs_by_country.json pythonanywhere/databases/db/spotify_info_db
           git commit -m "Update top_songs_by_country.json from Python script"
           git push origin main
         fi

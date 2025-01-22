@@ -74,15 +74,15 @@ jobs:
       
 
       # Step 7: Commit and Push Changes
-    - name: Commit changes
+    - name: Commit and push changes
       working-directory: spotify_private_repo
       run: |
-       if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
+        if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
-          git push
+          git push origin main
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

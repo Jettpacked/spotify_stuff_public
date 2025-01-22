@@ -26,7 +26,6 @@ jobs:
     - name: Checkout LFS objects
       run: |
         cd spotify_private_repo
-        git fetch origin
         git lfs checkout
 
 
@@ -75,7 +74,22 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
       
 
-      # Step 7: Commit and Push Changes
+      # Step 7: Stash Specific File
+    - name: Stash specific file
+      working-directory: spotify_private_repo
+      run: git stash push pythonanywhere/databases/json/top_songs_by_country.json
+
+      # Step 8: Pull latest changes from remote
+    - name: Pull latest changes from remote
+      working-directory: spotify_private_repo
+      run: git pull origin main
+      
+      # Step 9: Unstash Specific File
+    - name: Unstash specific file
+      working-directory: spotify_private_repo
+      run: git stash pop
+    
+      # Step 10: Commit and Push Changes
     - name: Commit and push changes
       working-directory: spotify_private_repo
       run: |
@@ -84,7 +98,7 @@ jobs:
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
-          git push origin
+          git push origin main
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

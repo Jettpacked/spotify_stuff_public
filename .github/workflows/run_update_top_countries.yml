@@ -84,7 +84,6 @@ jobs:
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
-          git pull --rebase origin
           git push origin
         fi
       env:

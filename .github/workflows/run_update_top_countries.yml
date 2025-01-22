@@ -26,7 +26,7 @@ jobs:
     - name: Checkout LFS objects
       run: |
         cd spotify_private_repo
-        git fetch origin main
+        git fetch origin
         git lfs checkout
 
 
@@ -84,8 +84,8 @@ jobs:
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
-          git pull --rebase origin main
-          git push origin main
+          git pull --rebase origin
+          git push origin
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

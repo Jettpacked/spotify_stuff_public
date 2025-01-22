@@ -50,13 +50,13 @@ jobs:
         SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
         SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
       run: 
-        python update_top_countries.py
+        python Github/update_top_countries.py
       working-directory: spotify_private_repo
 
       # Step 5: Run upload_files_to_python_anywhere.py
     - name: Run upload_files_to_python_anywhere.py
       run: |
-        python upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
+        python Github/upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
       working-directory: spotify_private_repo
       
       # Step 6: Git Config

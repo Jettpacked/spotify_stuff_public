@@ -15,7 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: checkout_private_repo
+
+    # Step 1: Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    # Step 2: checkout_private_repo
     - name: Checkout another repository
       uses: actions/checkout@v4
       with:
@@ -23,28 +30,22 @@ jobs:
         token: ${{ secrets.MY_PAT }}
         path: spotify_private_repo
         lfs: true
+    
     - name: Checkout LFS objects
-      working-directory: spotify_private_repo
       run: |
+        defaults:
+        run:
+          working-directory: spotify_private_repo
         git lfs checkout
     - name: Install Git LFS
-      working-directory: spotify_private_repo
       run: |
         curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
         sudo apt-get install git-lfs
     - name: Track large files
-      working-directory: spotify_private_repo
       run: git lfs track "*.db"
-
-    # Step 2: Set up Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
         
     # Step 3: Install Dependencies
     - name: Install Dependencies
-      working-directory: spotify_private_repo
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
@@ -62,55 +63,55 @@ jobs:
         SPOTIFYAPI_CLIENT_SECRET: ${{ secrets.SPOTIFYAPI_CLIENT_SECRET }}
         SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
         SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
-      working-directory: spotify_private_repo
       run: 
         python pythonanywhere/update_top_countries.py
 
       # Step 5: Run upload_files_to_python_anywhere.py
     - name: Run upload_files_to_python_anywhere.py
-      working-directory: spotify_private_repo
       run: |
         python pythonanywhere/upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
       
       
       # Step 6: Git Config
     - name: Git Config
-      working-directory: spotify_private_repo
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
       
 
-      # Step 7: Stash Specific File
-    - name: Stash specific file
-      working-directory: spotify_private_repo
+      # Step 7: Stash all changes
+    - name: Stash all changes
       run: git stash
 
       # Step 8: Pull latest changes from remote
     - name: Pull latest changes from remote
-      working-directory: spotify_private_repo
       run: git pull origin main
       
-      # Step 9: Unstash Specific File
-    - name: Unstash specific file
-      working-directory: spotify_private_repo
+      # Step 9: Unstash all changes
+    - name: Unstash all changes
       run: git stash pop
     
-      # Step 10: Commit and Push Changes
-    - name: Commit and push changes
-      working-directory: spotify_private_repo
+      # Step 10: Commit
+    - name: git add changes to specific files
       run: |
         if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
-          git commit -m "Update top_songs_by_country.json from Python script"
         if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_db; then
           echo "No changes to spotify_info_db"
         else
           git add pythonanywhere/databases/db/spotify_info_db
-          git commit -m "Update spotify_info_db from Python script"
-          git push origin main
+        fi
+        # Step 11: check for adds and push if commit exists
+    - name: Check for git adds
+      run: |
+        staged_files=$(git diff --cached --name-only)
+        if [ -z "$staged_files" ]; then
+          echo "No files staged for commit."
+        else
+          echo "There are files staged for commit"
+          git commit -m "Update files from github action 'update_top_countries' from repository 'spotify_stuff_public'"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

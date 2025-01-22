@@ -26,7 +26,9 @@ jobs:
     - name: Checkout LFS objects
       run: |
         cd spotify_private_repo
+        git fetch origin main
         git lfs checkout
+
 
     # Step 2: Set up Python
     - name: Set up Python
@@ -82,6 +84,7 @@ jobs:
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
+          git pull --rebase origin main
           git push origin main
         fi
       env:

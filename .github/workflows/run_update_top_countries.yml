@@ -56,7 +56,7 @@ jobs:
       # Step 5: Run upload_files_to_python_anywhere.py
     - name: Run upload_files_to_python_anywhere.py
       run: |
-        python upload_files_to_python_anywhere.py "static/files/json/top_songs_by_country.json"
+        python upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
       working-directory: spotify_private_repo
       
       # Step 6: Git Config
@@ -69,10 +69,10 @@ jobs:
       # Step 7: Commit and Push Changes
     - name: Commit changes
       run: |
-       if git diff --quiet HEAD -- ./static/files/text/top_songs_by_country.json; then
+       if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
         else
-          git add ./static/files/text/top_songs_by_country.json
+          git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
           git push
         fi

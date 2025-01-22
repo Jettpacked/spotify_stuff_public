@@ -103,8 +103,13 @@ jobs:
         if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
           echo "No changes to top_songs_by_country.json"
         else
-          git add pythonanywhere/databases/json/top_songs_by_country.json pythonanywhere/databases/db/spotify_info_db
+          git add pythonanywhere/databases/json/top_songs_by_country.json
           git commit -m "Update top_songs_by_country.json from Python script"
+        if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_db; then
+          echo "No changes to spotify_info_db"
+        else
+          git add pythonanywhere/databases/db/spotify_info_db
+          git commit -m "Update spotify_info_db from Python script"
           git push origin main
         fi
       env:

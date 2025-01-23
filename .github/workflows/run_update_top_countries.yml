@@ -68,16 +68,9 @@ jobs:
         SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
         SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
       run: 
-        python pythonanywhere/update_top_countries.py
-
-      # Step 5: Run upload_files_to_python_anywhere.py
-    - name: Run upload_files_to_python_anywhere.py
-      working-directory: spotify_private_repo
-      run: |
-        python pythonanywhere/upload_files_to_python_anywhere.py "pythonanywhere/databases/json/top_songs_by_country.json"
+        python pythonanywhere/update_top_countries.py    
       
-      
-      # Step 6: Git Config
+      # Step 5: Git Config
     - name: Git Config
       working-directory: spotify_private_repo
       run: |
@@ -85,22 +78,22 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
       
 
-      # Step 7: Stash all changes
+      # Step 6: Stash all changes
     - name: Stash all changes
       working-directory: spotify_private_repo
       run: git stash
 
-      # Step 8: Pull latest changes from remote
+      # Step 7: Pull latest changes from remote
     - name: Pull latest changes from remote
       working-directory: spotify_private_repo
       run: git pull origin main
       
-      # Step 9: Unstash all changes
+      # Step 8: Unstash all changes
     - name: Unstash all changes
       working-directory: spotify_private_repo
       run: git stash pop
     
-      # Step 10: Commit
+      # Step 9: Commit
     - name: git add changes to specific files
       working-directory: spotify_private_repo
       run: |
@@ -108,13 +101,14 @@ jobs:
           echo "No changes to top_songs_by_country.json"
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
+        fi
         if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_db; then
           echo "No changes to spotify_info_db"
         else
           git add pythonanywhere/databases/db/spotify_info_db
         fi
         
-        # Step 11: check for adds and push if commit exists
+        # Step 10: check for adds and push if commit exists
     - name: Check for git adds
       working-directory: spotify_private_repo
       run: |

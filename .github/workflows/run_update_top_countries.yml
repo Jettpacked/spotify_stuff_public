@@ -102,10 +102,10 @@ jobs:
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
         fi
-        if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_db; then
+        if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_db.db; then
           echo "No changes to spotify_info_db"
         else
-          git add pythonanywhere/databases/db/spotify_info_db
+          git add pythonanywhere/databases/db/spotify_info_db.db
         fi
         
         # Step 10: check for adds and push if commit exists

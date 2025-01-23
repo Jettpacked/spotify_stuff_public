@@ -108,7 +108,7 @@ jobs:
           git add pythonanywhere/databases/db/spotify_info.db
         fi
         
-        # Step 10: check for adds and push if commit exists
+      # Step 10: check for adds and push if commit exists
     - name: Check for git adds
       working-directory: spotify_private_repo
       run: |
@@ -121,3 +121,11 @@ jobs:
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 11: Push changes to remote repository
+    - name: Push changes
+      working-directory: spotify_private_repo
+      run: git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

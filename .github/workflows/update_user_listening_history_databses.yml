@@ -4,7 +4,10 @@ on:
   workflow_dispatch: # Allows manual triggering
   schedule:  # Cron job to trigger the action twice an hour
     - cron: '29,59 * * * *'  # Run at minute 29 and 59 of every hour
-
+concurrency:
+  group: noConcurrentRuns
+  cancel-in-progress: false
+  
 jobs:
   update-file:
     runs-on: ubuntu-latest

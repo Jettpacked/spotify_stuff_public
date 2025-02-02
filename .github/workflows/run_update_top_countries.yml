@@ -72,12 +72,10 @@ jobs:
         JETTPACKEDPULSE_GMAIL: ${{ secrets.JETTPACKEDPULSE_GMAIL }}
         JETTPACKEDPULSE_GMAIL_PRAGMA: ${{ secrets.JETTPACKEDPULSE_GMAIL_PRAGMA }}
         PYTHONANYWHERE_API_KEY: ${{ secrets.PYTHONANYWHERE_API_KEY }}
-        PYTHONANYWHERE_USERNAME: ${{ secrets.PYTHONANYWHERE_USERNAME }}
-        
-        
+        PYTHONANYWHERE_USERNAME: ${{ secrets.PYTHONANYWHERE_USERNAME }}    
         
       run: 
-        python pythonanywhere/update_top_countries.py    
+        python -m pythonanywhere.update_top_countries    
       
       # Step 5: Git Config
     - name: Git Config

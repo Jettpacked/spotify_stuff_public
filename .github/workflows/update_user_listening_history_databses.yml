@@ -1,0 +1,129 @@
+name: Update Databases Every User Listening History
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:  # Cron job to trigger the action twice an hour
+    - cron: '29,59 * * * *'  # Run at minute 29 and 59 of every hour
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+      # Step 1: Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+     # Step 2: checkout_private_repo
+    - name: Checkout another repository
+      uses: actions/checkout@v4
+      with:
+        repository: Jettpacked/Spotify_Stuff
+        token: ${{ secrets.MY_PAT }}
+        path: spotify_private_repo
+        lfs: true
+        
+    - name: Checkout LFS objects
+      working-directory: spotify_private_repo
+      run: |
+        git lfs checkout
+        
+    - name: Install Git LFS
+      working-directory: spotify_private_repo
+      run: |
+        curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+        sudo apt-get install git-lfs
+        
+    - name: Track large files
+      working-directory: spotify_private_repo
+      run: git lfs track "*.db"
+
+    # Step 3: Install Dependencies (if needed)
+    - name: Install Dependencies
+      working-directory: spotify_private_repo
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # Step 4: Run the Python Script
+    - name: Run Python Script
+      working-directory: spotify_private_repo
+      env:
+        SPOTIFYAPI_CLIENT_ID: ${{ secrets.SPOTIFYAPI_CLIENT_ID }}
+        SPOTIFYAPI_CLIENT_SECRET: ${{ secrets.SPOTIFYAPI_CLIENT_SECRET }}
+        REDIRECT_URI_SPOTIFY_AUTHENTICATION: ${{ secrets.REDIRECT_URI_SPOTIFY_AUTHENTICATION }}
+        PRAGMA_KEY_USER_LOGIN_INFO: ${{ secrets.PRAGMA_KEY_USER_LOGIN_INFO }}
+        PRAGMA_KEY_USER_SEC_INFO: ${{ secrets.PRAGMA_KEY_USER_SEC_INFO }}
+        POST_REQUEST_AUTH_KEY_FILE_UPDATES: ${{ secrets.POST_REQUEST_AUTH_KEY_FILE_UPDATES }}
+        SPOTIFY_USER_ID: ${{ secrets.SPOTIFY_USER_ID }}
+        SPOTIFY_USER_PRAGMA_KEY: ${{ secrets.SPOTIFY_USER_PRAGMA_KEY }}
+        MY_GITHUB_PAT: ${{ secrets.MY_GITHUB_PAT }}
+        MYGITHUB_USERNAME_REPO: ${{ secrets.MYGITHUB_USERNAME_REPO }}
+        PRAGMA_RESET_SALT: ${{ secrets.PRAGMA_RESET_SALT }}
+        PRAGMA_RESET_SECRET_KEY: ${{ secrets.PRAGMA_RESET_SECRET_KEY }}
+        JETTPACKEDPULSE_GMAIL: ${{ secrets.JETTPACKEDPULSE_GMAIL }}
+        JETTPACKEDPULSE_GMAIL_PRAGMA: ${{ secrets.JETTPACKEDPULSE_GMAIL_PRAGMA }}
+        PYTHONANYWHERE_API_KEY: ${{ secrets.PYTHONANYWHERE_API_KEY }}
+        PYTHONANYWHERE_USERNAME: ${{ secrets.PYTHONANYWHERE_USERNAME }}
+      run: python Spotify.py
+
+      # Step 5: Git Config
+    - name: Git Config
+      working-directory: spotify_private_repo
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      
+      # Step 6: Stash all changes
+    - name: Stash all changes
+      working-directory: spotify_private_repo
+      run: git stash
+
+      # Step 7: Pull latest changes from remote
+    - name: Pull latest changes from remote
+      working-directory: spotify_private_repo
+      run: git pull origin main
+      
+      # Step 8: Unstash all changes
+    - name: Unstash all changes
+      working-directory: spotify_private_repo
+      run: git stash pop
+
+     # Step 9: add
+    - name: git add changes to specific files
+      working-directory: spotify_private_repo
+      run: |
+        if git diff --quiet HEAD -- *spotify_listening_history_*; then
+          echo "No changes to files matching spotify_listening_history_"
+        else
+          if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info.db; then
+            echo "No changes to files pythonanywhere/databases/db/spotify_info.db"
+          else
+            git add pythonanywhere/databases/db/spotify_info.db
+          fi
+          git add *spotify_listening_history_*
+        fi
+        
+      # Step 10: check for adds and commit if add exists
+    - name: Check for git adds
+      working-directory: spotify_private_repo
+      run: |
+        staged_files=$(git diff --cached --name-only)
+        if [ -z "$staged_files" ]; then
+          echo "No files staged for commit."
+        else
+          echo "There are files staged for commit"
+          git commit -m "Update files matching spotify_listening_history_ and spotify_info.db from Python script"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 11: Push changes to remote repository
+    - name: Push changes
+      working-directory: spotify_private_repo
+      run: git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -10,6 +10,7 @@ on:
 concurrency:
   group: noConcurrentRuns
   cancel-in-progress: false
+  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   Run_update_top_countries:

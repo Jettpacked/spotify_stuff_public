@@ -106,7 +106,13 @@ jobs:
       # Step 8: Unstash all changes
     - name: Unstash all changes
       working-directory: spotify_private_repo
-      run: git stash pop
+      run: |
+        if git stash list | grep -q 'stash@{0}'; then
+          git stash pop
+          echo "Stashed changes applied."
+        else
+          echo "No stashed changes found, skipping git stash pop."
+        fi
     
       # Step 9: Commit
     - name: git add changes to specific files

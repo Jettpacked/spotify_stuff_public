@@ -90,7 +90,13 @@ jobs:
       # Step 6: Stash all changes
     - name: Stash all changes
       working-directory: spotify_private_repo
-      run: git stash
+      run: |
+        if git stash list | grep -q 'stash@{0}'; then
+          git stash pop
+          echo "Stashed changes applied."
+        else
+          echo "No stashed changes found, skipping git stash pop."
+        fi
 
       # Step 7: Pull latest changes from remote
     - name: Pull latest changes from remote

@@ -4,11 +4,12 @@ name: update_top_countries
 
 # Controls when the workflow will run
 on:
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
   schedule:
     - cron: '0 17 * * *'
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
+concurrency:
+  group: noConcurrentRuns
+  cancel-in-progress: false
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   Run_update_top_countries:

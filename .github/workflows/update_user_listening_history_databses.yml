@@ -2,8 +2,8 @@ name: Update Databases Every User Listening History
 
 on:
   workflow_dispatch: # Allows manual triggering
-  # schedule:  # Cron job to trigger the action twice an hour
-  #   - cron: '29,59 * * * *'  # Run at minute 29 and 59 of every hour
+  schedule:  # Cron job to trigger the action twice an hour
+    - cron: '29,59 * * * *'  # Run at minute 29 and 59 of every hour
 concurrency:
   group: noConcurrentRuns
   cancel-in-progress: false
@@ -27,22 +27,6 @@ jobs:
         repository: Jettpacked/Spotify_Stuff
         token: ${{ secrets.MY_GITHUB_PAT }}
         path: spotify_private_repo
-        lfs: true
-        
-    - name: Checkout LFS objects
-      working-directory: spotify_private_repo
-      run: |
-        git lfs checkout
-        
-    - name: Install Git LFS
-      working-directory: spotify_private_repo
-      run: |
-        curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-        sudo apt-get install git-lfs
-        
-    - name: Track large files
-      working-directory: spotify_private_repo
-      run: git lfs track "*.db"
 
     # Step 3: Install Dependencies (if needed)
     - name: Install Dependencies
@@ -108,10 +92,10 @@ jobs:
         if git diff --quiet HEAD -- *spotify_listening_history_*; then
           echo "No changes to files matching spotify_listening_history_"
         else
-          if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info.db; then
-            echo "No changes to files pythonanywhere/databases/db/spotify_info.db"
+          if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_base85.txt; then
+            echo "No changes to files pythonanywhere/databases/db/spotify_info_base85.txt"
           else
-            git add pythonanywhere/databases/db/spotify_info.db
+            git add pythonanywhere/databases/db/spotify_info_base85.txt
           fi
           git add *spotify_listening_history_*
         fi
@@ -125,7 +109,7 @@ jobs:
           echo "No files staged for commit."
         else
           echo "There are files staged for commit"
-          git commit -m "Update files matching spotify_listening_history_ and spotify_info.db from Python script"
+          git commit -m "Update files matching spotify_listening_history_ and spotify_info_base85.txt from Python script"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -5,8 +5,8 @@ name: update_top_countries
 # Controls when the workflow will run
 on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
-  # schedule:
-  #   - cron: '0 17 * * *'
+  schedule:
+    - cron: '0 17 * * *'
 concurrency:
   group: noConcurrentRuns
   cancel-in-progress: false
@@ -31,22 +31,6 @@ jobs:
         repository: Jettpacked/Spotify_Stuff
         token: ${{ secrets.MY_GITHUB_PAT }}
         path: spotify_private_repo
-        lfs: true
-    
-    - name: Checkout LFS objects
-      working-directory: spotify_private_repo
-      run: |
-        git lfs checkout
-        
-    - name: Install Git LFS
-      working-directory: spotify_private_repo
-      run: |
-        curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-        sudo apt-get install git-lfs
-        
-    - name: Track large files
-      working-directory: spotify_private_repo
-      run: git lfs track "*.db"
         
     # Step 3: Install Dependencies
     - name: Install Dependencies
@@ -123,10 +107,10 @@ jobs:
         else
           git add pythonanywhere/databases/json/top_songs_by_country.json
         fi
-        if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info.db; then
-          echo "No changes to spotify_info_db"
+        if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_base85.txt; then
+          echo "No changes to spotify_info_base85.txt"
         else
-          git add pythonanywhere/databases/db/spotify_info.db
+          git add pythonanywhere/databases/db/spotify_info_base85.txt
         fi
         
       # Step 10: check for adds and push if commit exists

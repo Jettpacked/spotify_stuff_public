@@ -59,11 +59,11 @@ jobs:
     # Step 6: Stash all changes
     - name: Stash all changes
       run: |
-        if git stash list | grep -q 'stash@{0}'; then
-          git stash pop
-          echo "Stashed changes applied."
+        if git status --porcelain | grep -q .; then
+          git stash
+          echo "Changes stashed."
         else
-          echo "No stashed changes found, skipping git stash pop."
+          echo "No changes to stash, skipping git stash."
         fi
 
     # Step 7: Pull latest changes from remote

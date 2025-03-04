@@ -68,7 +68,7 @@ jobs:
     - name: Stash all changes
       run: |
         if git status --porcelain | grep -q .; then
-          git stash
+          git stash --all
           echo "Changes stashed."
         else
           echo "No changes to stash, skipping git stash."

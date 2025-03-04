@@ -34,19 +34,21 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
+        
+     # Step 4a: Run command to update code links
+    - name: Run python code links
+      working-directory: ./
+      run: |
+        pip install setuptools
+        python tools/links/code_links.py
+        
+        
      # Step 4: Run command to update rst files
     - name: Run Update rst files
       working-directory: documentation/sphinx_documentation
       
       run: 
         sphinx-apidoc -o source ../../software/SprintMastersPDMS/kanban_board
-
-     # Step 4a: Run command to update code links
-    - name: Run python code links      
-      run: |
-        pip install setuptools
-        python tools/links/code_links.py
         
     # Step 5: Run command to update documentation
     - name: Update Documentation

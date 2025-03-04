@@ -105,6 +105,6 @@ jobs:
 
     # Step 11: Push changes to remote repository
     - name: Push changes
-      run: git push origin test
+      run: git push origin develop
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -91,10 +91,10 @@ jobs:
     # Step 9: Commit
     - name: git add changes to specific files
       run: |
-        if git diff --quiet HEAD -- documentation/sphinx_documentation/build/html; then
-          echo "No changes to documentation/sphinx_documentation/build/html"
+        if git status --porcelain | grep -qE "documentation/sphinx_documentation/build/html|software/requirements"; then
+          echo "No changes to documentation/sphinx_documentation/build/html or software/requirements"
         else
-          git add documentation/sphinx_documentation/build/html/*
+          git add -A documentation/sphinx_documentation/build/html software/requirements
         fi
         
     # Step 10: check for adds and push if commit exists
@@ -107,8 +107,6 @@ jobs:
           echo "There are files staged for commit"
           git commit -m "SFWE407-507 #25 Update files from github action to update documentation and code_links"
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Step 11: Push changes to remote repository
     - name: Push changes

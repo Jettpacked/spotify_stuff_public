@@ -41,6 +41,10 @@ jobs:
       
       run: 
         sphinx-apidoc -o source ../../software/SprintMastersPDMS/kanban_board
+
+     # Step 4a: Run command to update code links
+    - name: Run python code links      
+      run: 
         python tools/links/code_links.py
         
     # Step 5: Run command to update documentation

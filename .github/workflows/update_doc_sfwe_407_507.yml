@@ -105,7 +105,7 @@ jobs:
           echo "No files staged for commit."
         else
           echo "There are files staged for commit"
-          git commit -m "SFWE407-507 #25 Update files from github action to update documentation"
+          git commit -m "SFWE407-507 #25 Update files from github action to update documentation and code_links"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -90,12 +90,7 @@ jobs:
     
     # Step 9: Commit
     - name: git add changes to specific files
-      run: |
-        if git status --porcelain | grep -qE "documentation/sphinx_documentation/build/html|software/requirements"; then
-          echo "No changes to documentation/sphinx_documentation/build/html or software/requirements"
-        else
-          git add -A documentation/sphinx_documentation/build/html software/requirements
-        fi
+      run: git add -A documentation/sphinx_documentation/build/html software/requirements
         
     # Step 10: check for adds and push if commit exists
     - name: Check for git adds

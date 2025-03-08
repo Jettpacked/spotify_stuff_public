@@ -75,11 +75,11 @@ jobs:
     - name: Stash all changes
       working-directory: spotify_private_repo
       run: |
-        if git stash list | grep -q 'stash@{0}'; then
-          git stash pop
-          echo "Stashed changes applied."
+        if git status --porcelain | grep -q .; then
+          git stash
+          echo "Changes stashed."
         else
-          echo "No stashed changes found, skipping git stash pop."
+          echo "No changes to stash, skipping git stash."
         fi
 
       # Step 7: Pull latest changes from remote
@@ -102,16 +102,7 @@ jobs:
     - name: git add changes to specific files
       working-directory: spotify_private_repo
       run: |
-        if git diff --quiet HEAD -- pythonanywhere/databases/json/top_songs_by_country.json; then
-          echo "No changes to top_songs_by_country.json"
-        else
-          git add pythonanywhere/databases/json/top_songs_by_country.json
-        fi
-        if git diff --quiet HEAD -- pythonanywhere/databases/db/spotify_info_base85.txt; then
-          echo "No changes to spotify_info_base85.txt"
-        else
-          git add pythonanywhere/databases/db/spotify_info_base85.txt
-        fi
+        git add -A pythonanywhere/databases
         
       # Step 10: check for adds and push if commit exists
     - name: Check for git adds
@@ -124,8 +115,6 @@ jobs:
           echo "There are files staged for commit"
           git commit -m "Update files from github action 'update_top_countries' from repository 'spotify_stuff_public'"
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 11: Push changes to remote repository
     - name: Push changes

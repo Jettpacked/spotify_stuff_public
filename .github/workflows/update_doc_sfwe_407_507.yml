@@ -47,7 +47,8 @@ jobs:
     - name: Run Update rst files
       working-directory: documentation/sphinx_documentation
       
-      run: 
+      run: |
+        find source/ -type f -name "*.rst" ! -name "index.rst" -exec rm -f {} \;
         sphinx-apidoc -o source ../../software/SprintMastersPDMS/kanban_board
         
     # Step 5: Run command to update documentation

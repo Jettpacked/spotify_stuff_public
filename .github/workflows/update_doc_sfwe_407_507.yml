@@ -93,15 +93,18 @@ jobs:
     - name: git add changes to specific files
       run: git add -A documentation/sphinx_documentation/build/html software/requirements
         
-    # Step 10: check for adds and push if commit exists
-    - name: Check for git adds
+    - name: Check staged files and commit if valid
       run: |
-        staged_files=$(git diff --cached --name-only | grep -v '^.*environment\.pickle$')
-        if [ -z "$staged_files" ]; then
-          echo "No valid files staged for commit (excluding environment.pickle)."
+        # Unstage environment.pickle if it's the only change
+        staged_files=$(git diff --cached --name-only)
+        filtered_files=$(echo "$staged_files" | grep -v 'environment\.pickle$' || true)
+
+        if [ -z "$filtered_files" ]; then
+          echo "Only environment.pickle is staged. Skipping commit and exiting workflow."
+          exit 0
         else
-          echo "Valid files staged for commit (excluding environment.pickle):"
-          echo "$staged_files"
+          echo "Files to commit (excluding environment.pickle):"
+          echo "$filtered_files"
           git commit -m "SFWE407-507 #25 Update files from github action to update documentation and code_links"
         fi
 

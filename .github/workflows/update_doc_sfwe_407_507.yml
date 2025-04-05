@@ -96,11 +96,12 @@ jobs:
     # Step 10: check for adds and push if commit exists
     - name: Check for git adds
       run: |
-        staged_files=$(git diff --cached --name-only)
+        staged_files=$(git diff --cached --name-only | grep -v '^.*environment\.pickle$')
         if [ -z "$staged_files" ]; then
-          echo "No files staged for commit."
+          echo "No valid files staged for commit (excluding environment.pickle)."
         else
-          echo "There are files staged for commit"
+          echo "Valid files staged for commit (excluding environment.pickle):"
+          echo "$staged_files"
           git commit -m "SFWE407-507 #25 Update files from github action to update documentation and code_links"
         fi
 

@@ -36,14 +36,14 @@ jobs:
         pip install -r requirements.txt
         
      # Step 4a: Run command to update code links
-    - name: Run python code links
+    - name: Run python requirement linking scripts
       working-directory: ./
       run: |
-        pip install setuptools
         python tools/links/code_links.py
+        python tools/links/test_case_links.py
         
         
-     # Step 4: Run command to update rst files
+     # Step 4b: Run command to update rst files
     - name: Run Update rst files
       working-directory: documentation/sphinx_documentation
       
